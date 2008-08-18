@@ -1,0 +1,247 @@
+
+
+
+
+
+<div class="contents" id="contents-title">
+	<h2>Contents</h2>
+</div>
+<div class="content" id="contents-content">
+	<ul>
+		<p><a href="#overveiw-title">Overview</a></p>
+		<p><a href="#userguide-title">User guide</a></p>
+		<p><a href="#covariance-title">The Covarinance Matrix</a></p>
+		<p><a href="#brownian-title">Brownian Motion</a></p>
+		<p><a href="#ou-title">Ornstein-Uhlenbeck</a></p>
+		<p><a href="#bounding-title">Bounding</a></p>		
+		<p><a href="#simres-title">Simulation Results</a></p>		
+		<p><a href="#stats-title">Statistical Analysis</a></p>
+		<p><a href="#tutorial-title">Breif Tutorial</a></p>
+		<p><a href="#links-title">Useful Links</a></p>		
+	</ul>
+<div>
+<div class="title" id="overveiw-title">
+ 	<h3> Overview </h3>
+</div>
+<div class="content" id="overview-content">
+	<ul>
+		<p>This module allows you to simulate the evolution of correlated traits, and cloesly mirror the functionality of PDAPsimul.</p>
+		<p>There are two correlated trait models that can be run in this package, Brownian Motion and Ornstein-Uhlenbeck.</p>
+		<p>The Ornstein-Uhlenbeck process is a stochastic function that exhibits a mean reverting tendency. It can be thought of as a moving average.</p>
+		<p>Both models can be simulated in a gradual fashion, where the traits of daughter nodes depend on the branch length, and in a speciational fashion, where all branch lengths are set to 1.</p>
+		<p>Finally, there is a punctuated equilibrium model which implements a speciational Brownian motion model, with the exception that only one daughter species experiences a change of traits </p>
+	</ul>
+<div>
+
+<div class="title" id="userguide-title">
+	<h3>A User Guide</h3>
+</div>
+<div class="content" id="userguide-content">
+	<ul>
+	<p>Chose the "New Character Model" option in the "Character" menu you should now see a Covariance Matrix Model, PDSIM_Brownian Motion and Ornstein-Uhlenbeck menu items. The Ornstein-Uhlenbeck and Brownian Motion models can be used like continuous character models, and should be available for any calculations you would do with continuous character models.</p>
+	</ul>
+</p>
+<div class="title" id="covariance-title">
+	<h4>Co Variance matrix</h4>
+</div>
+<div class="content" id="covariance-content">
+	<ul>
+	<p>
+	The Co Variance matrix requires a Tree for running simulations, and a continuous trait matrix to calculate default values for starting models. You must create these before creating a new Co Variance matrix.
+	</p>
+	<p>
+	Upon creating a co variance matrix, you will see a square matrix with the name of each trait in the continuous trait matrix as a column title, and all row titles set to "(trait name): unassigned."
+	</p>
+	<p>
+	This is the covariance matrix showing the correlation between all pairs of traits, and the default values were calculated from the correlation of traits in the trait matrix. The row titles also tell you what model controls the evolution of a particular trait. To assign a model to control trait evolution, simply right click the row title.
+	</p>
+	<p>
+	When a model is assigned to control a trait, a dialog will ask you if you wish to assign default values for the character to that model. By doing so you will lose any current settings of the model. The default settings are designed to help create a null hypothesis for later statistic tests.
+	</p>
+	<p>
+	Evolution of the traits can be simulated on the tree once all the traits are assigned models. Under the Co Variance matrix menu chose the "Run Simulation" option. A diabog box will prompt you for a model name, the number of replicates to run, and a step size.
+	</p>
+	<p>
+    	* The step size should only be non-zero when bounding is used. A non-zero step size causes values for all traits to be calculated each step along branches. This increases the amount of necessary processing time. 
+	</p>
+	<p>
+   	 <b>* Warning: Some branch lengths can be very long (10^6), and specify a small step size (10) will take an unreasonable amount of time to complete simulations. When specifying step sizes, make sure to take branch lengths into account. </b>
+	</p>
+	<p>
+	<b>Show cholesky</b>: Changes the values displayed in the matrix to the values of the cholesky matrix used to generate correlated random numbers, and an option to add new continuous character simulation. 
+	</p>
+	<p>
+	Continuous character models can also be created with the new model option under character models.
+	</p>
+	</ul>
+</div>
+<div class="title" id="brownian-title">
+	<h4>PDSIM-Brownian Motion</h4>
+</div>
+<div class="content" id="brownian-content">
+	<ul>
+	<p>
+   	<b>Trait variance:</b> This represents the variance around a mean arising from random motion of the trait. If Variance of mean at tips is 0 then this represents the expected variance of the trait at tips of the tree. I have tested to make sure this works for trees with contemporaneous tips, and I believe it should generally work, but temporally heterogeneous tips are untested. 
+	</p>
+	<p><b>
+    	Root state:</b> Simply the value of the trait at the root node of the tree. 
+	</p>
+	<p><b>Mean state at tips:</b> The expected mean state of the trait at the tips of the tree. If this is different than the root state there is directional component to the motion of traits. This is somewhat analogous to the mean velocity of a group molecules diffusing in a liquid. If a trait as a whole has a tendency to move over evolutionary time then this is reflected by a difference between root states and mean tip states.
+	</p>
+	<p><b>
+	Variance of mean at tips:</b> This value represents the variance of the mean velocity of traits. Though trait means do not exist for individual nodes per say, a variance of means at tips results in a distribution of velocity of traits. More practically the total variance of a trait at the tips will be the sum of the trait variance and the variance of the mean. Also, trait movement is drawn from a correlated normal distribution and the mean movement is not, so the correlation between traits will also be lower as the variance of the mean at tips is greater. 
+	</p>
+	<p><b>Ignore branch length:</b> Tells the simulator to treat all branches as 1 unit in length.</p>
+	<p><b>Punctuated:</b> Tells the simulator to treat nodes with the same name as representing the same unchanged species. All chance is distributed to nodes who's names differ from the parent nodes name.</p>
+	<p><b>Use bounding:</b> Specifies that traits cannot take on values outside of certain bounds. When telling the simulator to use bounding it is also </p>
+	
+	<p>It is important to consider how often the simulator checks to see if traits have gone out of bounds on longer branches. I have not developed any guidelines on setting step size yet. When specified the lower and upper bound values are used, and of course the lower bound value must be smaller than the upper bound value. </p>
+	
+	<p><b>Bounding Types:</b> Types of bounding are described in the bounding section. 
+
+	<p><b>Set to defaults:</b> Prompts you for a matrix and character to set as the default values for this model. 
+	</ul>
+<div class="title" id="ou-title">
+	<h4>Ornstein-Uhlenbeck</h4>
+</div>
+<div class="content" id="ou-content">
+	<ul>
+	<p>Most of the parameters of the Ornstein Uhlenbeck model are similar to those in the brownian motion model, the key differences are the use of peaks instead of means, and the addition of a decay variable.
+	<p><b>Peaks:</b> peaks represent the mean the the Ornstein Uhlenbeck model has a tendency to revert to. Unlike means in brownain motion the peak variable is explicitly stored for each node during calculations.</p>
+	<p><b>Decay:</b> The decay is a measure of the strength of the tendency of this model to revert to the mean. Higher decays will lead to less variability around a peak.</p>
+	</ul>
+</div>
+<div class="title" id="bounding-title">
+	<h4>Bounding procedures</h4>
+</div>
+<div class="content" id="bounding-content">
+	<ul>
+	<p>
+	A number of bounding procedures exist, and are set by the user as an parameter of the simulation.
+	</p>
+    	<p><b>Truncate Change:</b> sets an out of bound trait to the boundary value.</p>
+    	<p><b>Flip:</b> causes the trait to step away from the bound instead of over it, if this move also takes the trait out of bounds then the truncation method is used.</p>
+    	<p><b>Hard Bounce:</b> the trait moves its full step distance, but reveres the direction of motion at the bound.</p>
+    	<p><b>Softbounce:</b> reduces motion toward the bound by a factor dependent on the distance of a trait from the bound.</p>
+	<p><b>Replace:</b> if a trait moves out of bounds then the step is simply ignored and recalculated from its initial value.</p>
+	</ul>
+</div>
+
+<div class="title" id="simres-title">
+	<h4>Simulation Results</h4>
+</div>
+<div class="content" id="simres-content">
+	<ul>
+	<p>The simulation results can be saved as .sim files or .csv files.</p>
+ 	<p><b>.sim files:</b> .sim file only save the information for the first two traits, but can be opened by PDANOVA for statistical processing. If you intend to open these files in PDANOVA, make sure to specify the DOS format end line.</p>
+    	<p>
+	<b>.csv files:</b> .csv files save the results in a comma separated format that can be opened by most spreadsheet software. 
+	</p>
+	<p><b>Statistical Analysis</b> This option runs does a serious of statistical test similar to those performed by PDANOVA, and a new window for looking at these results.</p>
+	<p> Once calculated all simulation results can be reopened by choosing the model name from the "Open Simulation Data" at the bottom of the "Character" menu.</p>
+	</ul>
+</div>
+
+<div class="title" id="stats-title">
+	<h4>Statistical Results</h4>
+</div>
+<div class="content" id="simres-content">
+	<ul>
+	<p>Under the statistics menu there are a number of options for displaying summary statistics which are fairly self explanatory. When chosen they will update the numbers in the matrix to reflect the proper information, but they is currently very little visual feed-back to tell you which statistic you are looking at.</p>
+
+	<p>Which ever statistic you are currently looking at can be saved to a .csv file for exporting to an external program.</p>
+
+	<p>A menu option also allows you to view the f and p-value. For a user chosen continuous character matrix when compared to the simulation results. The chosen matirx must have the same number of taxa as the simulation results for taxa to be properly grouped. The P value tells you the percentage of runs which have an F value smaller then the F value of the  matrix chosen by the user.</p>
+
+	<p> Statistical results can also be reopened by choosing the model name from the "Open Simulation Data" at the bottom of the "Character" menu.</p>
+	</ul>
+</div>
+<div class="title" id="tutorial-title">
+	<h4>Statistical Results</h4>
+</div>
+<div class="content" id="tutorial-content">
+	<ul>
+<p>Open up the example "00a-FelsteinsContrasts.nex" in the correlation directory.</p>
+
+<p>Go to "Character Matrix Editor" in the Character Menu, and chose the 'I' shaped cursor in order to edit text.</p>
+
+<p>change the first column header to "Body Mass" and the second column header to "Home Range"</p>
+
+<p>Select "New Character Model" > PDSIM_Brownian Motion.</p>
+
+<p>Title the new model "Body Mass."</p>
+
+<p>Click the check box "Use bounding".</p>
+
+<p>Select bounding type "Replacement".</p>
+
+<p>Enter a lower bound of "-1.5229" and upper "4.176"</p>
+<p>change "Root State" to ".3010"</p>
+
+<p>Select "New Character Model" > PDSIM_Brownian Motion.</p>
+
+<p>Title the new model "Home Range."</p>
+
+<p>Click the check box "Use bounding".</p>
+
+<p>Select bounding type "Replacement".</p>
+
+<p>Enter a lower bound of "-3.0" and "3.3010"</p>
+
+<p>change "Root State" to "1.8036"</p>
+
+<p>Select "New Character Model" > Co Variance Matrix.</p>
+<ul>
+<p>This should open a window with a 2x2 matrix. If not, abandon all hope and send me a bug report.<p>
+</ul>
+<p>
+Click on a row header which reads <i>Unassigned</i>.</p>
+
+<p>A window should pop up and show a few models to chose from, chose the appropriate model.</p>
+<p>Check the box <i>set model to defaults for this trait</i></p>
+
+<p>repeat for Home range</p>
+
+<p>The Row titles should now read:</p>
+<p>(Body Mass) Body Mass.</p>
+<p>(Home Range) Home Range.</p>
+<p>From the Co-Variance Matrix menu in the Co Variance Matrix window chose <i>Run Simulation.</i></p>
+<p>In the pop-up window change the number of runs to 1,000.</p>
+
+<ul><p>Even though we use bounding we will leave step size at 0 for now.</p></ul>
+<p>click OK.</p>
+
+<p>It may be running the simulation for a few minutes.</p>
+
+<p>At Prompt Change <i>TODO:FIXME</i> to <i>My Simulation</i> .</p>
+
+<p>A new window titled <i>MY Simulation</i> (for now) will show the simulation results with the column</p>
+<p>header listing a taxon and trait name, and the row header listing the run number.</p>
+<p>Chose the "Do Statistical Analysis" from the Simulation menu.</p>
+
+<p>Assign the first 19 taxa (Tm,Ur...Pp,Pt,Pq) To group one, and the rest to group two.</p>
+<p>You will have to to use the <b>Scroll right</b> and <b>Scroll left</b> buttons to assign all the taxa to groups.</p>
+<p>A number of statistic results are displayed and can be viewed by selecting the submenu "Show Summary Statistic" under the "Statistics" Menu.</p>
+
+<p>But for now, chose "Get F and P Value for Data Matrix."</p>
+
+<p>On the pop up menu chose a character trait.</p>
+
+<p>Then, again chose the Felstein Matrix under stored matrices.</p>
+<p>This value should be comperable to that in Garland's paper.</p>
+<p>Fin!</p>
+
+	</ul>
+</div>
+
+<div class="title" id="links-title">
+	<h4>Links</h4>
+</div>
+<div class="content" id="links-content">
+	<ul>
+	<li><a href="http://mesquiteproject.org/mesquite/mesquite.html">Mesquite</a>,
+	<li><a href="http://www.biology.ucr.edu/people/faculty/Garland/PDAP.html">PDAP</a>
+	<li><a href="https://www.nescent.org/wg_phyloinformatics/PhyloSoC:An_Extension_of_Mesquite_based_on_PDSIMUL">Project Home Page</a>
+        <p id="footer"><br> <a href=mailto:matthew.s.ackerman@gmail.com">Contact me</a> with any questions, bug reports, or request for new features, after all this module is desinged to be usefull to you! </p>
+	</ul>
+</div>
